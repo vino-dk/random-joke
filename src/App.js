@@ -7,30 +7,60 @@ class App extends Component {
     super(props);
     this.state = {
       jokeObject: {},
-      error: null
+      error: null,
+      punchState: false,
+      isLoading: true 
     };
+
+    // necessary to make 'this' work in the callback
+    this.handleSetUpClick = this.handleSetUpClick.bind(this);
+    this.handleFetchDataClick = this.handleFetchDataClick.bind(this);
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
+    this.setState({isLoading: true})
     axios.get('https://official-joke-api.appspot.com/random_joke')
       .then(res =>
-        this.setState({ jokeObject: res.data})
+        this.setState({ 
+          jokeObject: res.data,
+          isLoading: false
+        })
       )
-      .catch(error => this.setState({ error }));
+      .catch(error => this.setState({ error, isLoading: false }));
+  }
+
+  handleSetUpClick = () => {
+    this.setState({ punchState: true });
+  }
+
+  handleFetchDataClick = () => {
+    this.fetchData()
+    this.setState({ punchState: false })
   }
 
   render() {
-    const { jokeObject } = this.state
+    const { jokeObject, punchState } = this.state
     return (
       <>
         <div className="App">
           <header className="title">
-            App to fetch a string
+            Take a joke.
           </header>
-          <div className="content">
-            <div key={this.state.id} className="content">
+          <button className="new-joke-button" onClick={this.handleFetchDataClick}>New Joke</button>
+          <div>
+            <div key={this.state.id}>
               <p className="content">{jokeObject.setup}</p>
-              <p className="content">{jokeObject.punchline}</p>
+            </div>
+            <div>
+              {punchState ? (
+                <p className="punchline">{jokeObject.punchline}</p>
+              ) : (
+                  <button className="new-joke-button" onClick={this.handleSetUpClick}>Reveal punchline!</button>
+                )}
             </div>
           </div>
         </div>
@@ -38,16 +68,5 @@ class App extends Component {
     );
   };
 };
-
-/*
-const Joke = (props) => {
-
-  return (
-    <>
-      <div className="content">{props.setup}</div>
-    </>
-  )
-}
-*/
 
 export default App;
