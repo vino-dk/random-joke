@@ -9,7 +9,7 @@ class App extends Component {
       jokeObject: {},
       error: null,
       punchState: false,
-      isLoading: true 
+      isLoading: true
     };
 
     // necessary to make 'this' work in the callback
@@ -22,10 +22,10 @@ class App extends Component {
   }
 
   fetchData = () => {
-    this.setState({isLoading: true})
+    this.setState({ isLoading: true })
     axios.get('https://official-joke-api.appspot.com/random_joke')
       .then(res =>
-        this.setState({ 
+        this.setState({
           jokeObject: res.data,
           isLoading: false
         })
@@ -43,28 +43,35 @@ class App extends Component {
   }
 
   render() {
-    const { jokeObject, punchState } = this.state
+    const { jokeObject, punchState, isLoading } = this.state
+    // New joke button to fetch. Loading indicator while fetch. Punchline button to reveal.
     return (
-      <>
-        <div className="App">
-          <header className="title">
-            Take a joke.
-          </header>
-          <button className="new-joke-button" onClick={this.handleFetchDataClick}>New Joke</button>
-          <div>
-            <div key={this.state.id}>
-              <p className="content">{jokeObject.setup}</p>
-            </div>
+      <div className="App">
+        <header className="title">
+          Take a joke.
+        </header>
+        <button className="new-joke-button" onClick={this.handleFetchDataClick}>New Joke</button>
+        {!isLoading ? (
+          <>
             <div>
-              {punchState ? (
-                <p className="punchline">{jokeObject.punchline}</p>
-              ) : (
-                  <button className="new-joke-button" onClick={this.handleSetUpClick}>Reveal punchline!</button>
-                )}
+              <div key={this.state.id}>
+                <p className="content">{jokeObject.setup}</p>
+              </div>
+              
+              <div>
+                {punchState ? (
+                  <p className="punchline">{jokeObject.punchline}</p>
+                ) : (
+                    <button className="new-joke-button" onClick={this.handleSetUpClick}>Reveal punchline!</button>
+                  )}
+              </div>
+            
             </div>
-          </div>
-        </div>
-      </>
+          </>
+        ) : (
+            <p className="loading">Loading...</p>
+          )}
+      </div>
     );
   };
 };

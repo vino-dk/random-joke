@@ -9,3 +9,5 @@ A simple example of using an API to render content. The app was bootstrapped wit
 * User can reveal the punchline through a button press. 
 * A new joke can be fetched by pressing a button. 
 
+Extras:
+* UX improvement: Loading indicator while fetching data.
